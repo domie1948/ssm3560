@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ShiyanDao">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yonghu_types as yonghuTypes
+        ,a.shiyanxiangmu_types as shiyanxiangmuTypes
+        ,a.shiyan_types as shiyanTypes
+        ,a.insert_time as insertTime
+        ,a.shiyan_content as shiyanContent
+        ,a.shiyanxiangmu_number as shiyanxiangmuNumber
+        ,a.create_time as createTime
+    </sql>
+
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ShiyanView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM Shiyan  a left join shiyanxiangmu shiyanxiangmu on a.shiyanxiangmu_types = shiyanxiangmu.id
+        <where>
+            <if test=" params.yonghuTypes != '' and params.yonghuTypes != null">
+                and a.yonghu_types = #{params.yonghuTypes}
+            </if>
+            <if test=" params.jiaoshiTypes != '' and params.jiaoshiTypes != null">
+                and shiyanxiangmu.jiaoshi_types = #{params.jiaoshiTypes}
+            </if>
+            <if test=" params.shiyanxiangmuTypes != '' and params.shiyanxiangmuTypes != null">
+                and a.shiyanxiangmu_types = #{params.shiyanxiangmuTypes}
+            </if>
+            <if test=" params.shiyanTypes != '' and params.shiyanTypes != null">
+                and a.shiyan_types = #{params.shiyanTypes}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null and params.insertTimeStart != 'null' ">
+                and a.insert_time &gt;= {params.insertTimeStart}
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null and params.insertTimeEnd != 'null' ">
+                and a.insert_time &lt;= {params.insertTimeEnd}
+            </if>
+            <if test=" params.shiyanContent != '' and params.shiyanContent != null and params.shiyanContent != 'null' ">
+                and a.shiyan_content like CONCAT('%',#{params.shiyanContent},'%')
+            </if>
+            <if test=" params.shiyanxiangmuNumber != '' and params.shiyanxiangmuNumber != null and params.shiyanxiangmuNumber != 'null' ">
+                and a.shiyanxiangmu_number = #{params.shiyanxiangmuNumber}
+            </if>
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>

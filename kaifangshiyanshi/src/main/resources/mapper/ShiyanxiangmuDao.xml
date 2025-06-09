@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ShiyanxiangmuDao">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.jiaoshi_types as jiaoshiTypes
+        ,a.yuye as yuye
+        ,a.shiyanxiangmu_name as shiyanxiangmuName
+        ,a.shiyanxiangmu_content as shiyanxiangmuContent
+        ,a.create_time as createTime
+    </sql>
+
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ShiyanxiangmuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        ,shiyanshi.shiyanshi_name as shiyanshiName
+
+        FROM shiyanxiangmu  a
+        left JOIN jiaoshi jiaoshi ON a.jiaoshi_types = jiaoshi.id
+        left JOIN yuye yuye ON a.yuye = yuye.id
+        left JOIN shiyanshi shiyanshi ON yuye.shiyanshi_types = shiyanshi.id
+
+        <where>
+            <if test=" params.jiaoshiTypes != '' and params.jiaoshiTypes != null">
+                and a.jiaoshi_types = #{params.jiaoshiTypes}
+            </if>
+            <if test=" params.yuye != '' and params.yuye != null and params.yuye != 'null' ">
+                and a.yuye = #{params.yuye}
+            </if>
+            <if test=" params.shiyanxiangmuName != '' and params.shiyanxiangmuName != null and params.shiyanxiangmuName != 'null' ">
+                and a.shiyanxiangmu_name like CONCAT('%',#{params.shiyanxiangmuName},'%')
+            </if>
+            <if test=" params.shiyanxiangmuContent != '' and params.shiyanxiangmuContent != null and params.shiyanxiangmuContent != 'null' ">
+                and a.shiyanxiangmu_content like CONCAT('%',#{params.shiyanxiangmuContent},'%')
+            </if>
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>

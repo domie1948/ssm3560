@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YuyeDao">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.shiyanshi_types as shiyanshiTypes
+        ,a.jiaoshi_types as jiaoshiTypes
+        ,a.insert_time as insertTime
+        ,a.yuye_types as yuyeTypes
+        ,a.create_time as createTime
+    </sql>
+
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YuyeView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM Yuye a
+        <where>
+            <if test=" params.shiyanshiTypes != '' and params.shiyanshiTypes != null">
+                and a.shiyanshi_types = #{params.shiyanshiTypes}
+            </if>
+            <if test=" params.jiaoshiTypes != '' and params.jiaoshiTypes != null">
+                and a.jiaoshi_types = #{params.jiaoshiTypes}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null and params.insertTimeStart != 'null' ">
+                and a.insert_time &gt;= {params.insertTimeStart}
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null and params.insertTimeEnd != 'null' ">
+                and a.insert_time &lt;= {params.insertTimeEnd}
+            </if>
+            <if test=" params.yuyeTypes != '' and params.yuyeTypes != null and params.yuyeTypes != 'null' ">
+                and a.yuye_types = #{params.yuyeTypes}
+            </if>
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>
